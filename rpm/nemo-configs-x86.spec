@@ -21,13 +21,37 @@ Source100:  nemo-configs-x86.yaml
 %{summary}.
 
 
-%package vm
-Summary:    Configs for x86 vm adaptation
+%package vm-common
+Summary:    Common files shared by both Xorg and Wayland for x86 vm adaptation
 Group:      Configs
+Provides:   nemo-configs-x86-vm-common
+Conflicts:  nemo-configs-x86 <= 0.2.1
+%description vm-common
+%{summary}
+
+%package vm-xorg
+Summary:    Xorg Configs for x86 vm adaptation
+Group:      Configs
+Provides:   nemo-configs-x86-vm-xorg
+Requires:   nemo-configs-x86-vm-common
+
 Provides:   nemo-mobile-configs-x86-vm > 2
 Obsoletes:  nemo-mobile-configs-x86-vm <= 2
+#don't break current xorg images
+Provides:   nemo-configs-x86-vm > 0.2.1
+Obsoletes:  nemo-configs-x86-vm <= 0.2.1
 
-%description vm
+%description vm-xorg
+%{summary}.
+
+
+%package vm-wayland
+Summary:    Wayland Configs for x86 vm adaptation
+Group:      Configs
+Provides:   nemo-configs-x86-vm-wayland
+Requires:   nemo-configs-x86-vm-common
+
+%description vm-wayland
 %{summary}.
 
 
@@ -66,12 +90,22 @@ rm -rf %{buildroot}
 # << install post
 
 
-%files vm
+%files vm-common
 %defattr(-,root,root,-)
 %{_sharedstatedir}/environment/nemo/61-x86-vm.conf
+# >> files vm-common
+# << files vm-common
+
+%files vm-wayland 
+%defattr(-,root,root,-) 
 %{_sharedstatedir}/environment/compositor/61-x86-vm-ui.conf
-# >> files vm
-# << files vm
+# >> files vm-wayland
+# << files vm-wayland
+
+#Currently empty package, to give an xorg alternative to the wayland package
+%files vm-xorg
+# >> files vm-xorg
+# << files vm-xorg
 
 %files generic
 %defattr(-,root,root,-)
